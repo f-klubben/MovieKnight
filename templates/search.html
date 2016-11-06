@@ -1,5 +1,14 @@
-﻿I found this bullshit looking for <b>{{ query }}</b><br/>
+﻿<html>
+  <title>Results</title>
+  <body>
+  {% if posters|length == 0 %}
+  <b>Nothing, we found nothing.</b>
+  {% else %}
+  I found this looking for <b>{{ query }}</b><br/>
 
-{% for poster in posters %}
-  <img src="{{ poster.url }}" style="width:80px" />
-{% endfor %}
+  {% for poster in posters %}
+  <a href="{{ poster.url }}"><img src="{{ poster.url }}" style="width:120px" /></a>
+  {% endfor %}
+  {% endif %}
+  </body>
+</html>

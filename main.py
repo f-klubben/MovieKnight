@@ -19,11 +19,9 @@ def main():
 @app.route("/search", methods=["POST"])
 def search():
     query = request.form.get("query")
-    message = "Fuck you, search for shit!"
     posters = []
 
     if query is not None:
-        message = "You totally found:" + query
         posters = find_movie_poster_url(query)
 
     return render_template("search.html", posters=posters, query=query)
