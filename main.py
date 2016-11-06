@@ -10,10 +10,6 @@ api_place = "https://en.wikipedia.org/w/api.php"
 app = Flask(__name__)
 
 def main():
-    # result = find_movie_poster_url("die hard 2")
-
-    # for r in result:
-    #     print(json.dumps(r.__dict__, indent=2))
     app.run(debug=True)
 
 @app.route("/search", methods=["POST"])
