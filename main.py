@@ -45,6 +45,7 @@ def find_movie_poster_url(name):
              "prop": "imageinfo",
              "iiprop": "url|mediatype",
              "gsrenablerewrites": False,
+             "gsearch": "nearmatch",
              "gsrnamespace": 6,
              "gsrsearch": str.join(" ",["file:", "poster", name]),
              "format": "json" }
