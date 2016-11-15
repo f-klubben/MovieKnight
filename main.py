@@ -1,3 +1,4 @@
+from os import listdir
 from os import path
 import requests
 import json
@@ -5,9 +6,24 @@ import re
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask import url_for
 
 api_place = "https://en.wikipedia.org/w/api.php"
-app = Flask(__name__)
+static_directory = "/static"
+app = Flask(__name__, static_url_path=static_directory)
+
+
+class PosterPage :
+    def __init__(self, page):
+        info = page.get("imageinfo")[0]
+        self.url = info.get("url")
+        self.file_type = info.get("mediatype")
+        self.title, self.ext = path.splitext(page.get("title"))
+        self.title = self.title[len("file:"):]
+
+    def __repr__(self):
+        return str({ "url": self.url, "title": self.title })
+
 
 def main():
     app.run(debug=True)
@@ -23,21 +39,8 @@ def search():
     return render_template("search.html", posters=posters, query=query)
 
 @app.route("/")
-def hello():
+def main_page():
     return render_template("main.html")
-
-
-class PosterPage :
-    def __init__(self, page):
-        info = page.get("imageinfo")[0]
-        self.url = info.get("url")
-        self.file_type = info.get("mediatype")
-        self.title, self.ext = path.splitext(page.get("title"))
-        self.title = self.title[len("file:"):]
-
-    def __repr__(self):
-        return str({ "url": self.url, "title": self.title })
-
 
 def find_movie_poster_url(name):
     data = { "action": "query",
@@ -57,6 +60,13 @@ def find_movie_poster_url(name):
     posters = filter(lambda p: p.file_type == "BITMAP", posters)
 
     return list(posters)
+
+@app.route("/list/")
+def list_posters():
+    images = map(lambda img: url_for("static", filename=img),
+                 listdir("."+static_directory))
+
+    return render_template("list.html", images = images)
 
 if __name__ == "__main__":
     main()

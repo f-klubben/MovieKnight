@@ -1,0 +1,26 @@
+﻿<!-- This is noncompliant html on purpose! -->
+<style>
+ * { box-sizing: border-box; }
+
+ .image {
+     margin: -5px;
+     width: 15%;
+     border-color: transparent;
+     border-style: solid;
+     border-width: 10px;
+ }
+
+ .selected {
+     border-color: red;
+ }
+</style>
+
+{% for image in images %}
+
+<img class="image selected" src="{{ image }}"></img>
+
+{% endfor %}
+{% include "all_the_stuff.html" %}
+<script>
+
+</script>
