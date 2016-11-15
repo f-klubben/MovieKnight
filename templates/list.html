@@ -15,12 +15,25 @@
  }
 </style>
 
-{% for image in images %}
+<div class="col-xs-12">
+    <button class="btn btn-large btn-success pick-a-movie">Pick a movie for me</button>
+</div>
+<div class="col-xs-12">
+    {% for image in images %}
 
-<img class="image selected" src="{{ image }}"></img>
+    <img class="image poster" src="{{ image }}"></img>
 
-{% endfor %}
+    {% endfor %}
+</div>
 {% include "all_the_stuff.html" %}
 <script>
+ var posters = $(".poster");
 
+ $(".btn.pick-a-movie").on("click", function(event) {
+     var count = posters.length;
+     var pick = Math.floor(Math.random() * count);
+     posters.removeClass("selected");
+     console.log(pick);
+     $(posters.get(pick)).addClass("selected");
+ });
 </script>
