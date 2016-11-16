@@ -24,16 +24,42 @@
 
 {% block script %}
 <script>
- var posters = $(".poster");
+ $(function(){
+     var posters = $(".poster");
+     function Pick(number){ return $(posters.get(number)); }
 
- $(".btn.pick-a-movie").on("click", function(event) {
-     var count = posters.length;
-     var pick = Math.floor(Math.random() * count);
-     posters.removeClass("selected");
-     console.log(pick);
-     $(posters.get(pick)).addClass("selected");
+     $(".btn.pick-a-movie").on("click", function(event) {
+         var count = posters.length;
+         var pick = Math.floor(Math.random() * count);
+         var secondsOfTorture = 5; // Math.floor(Math.random() * (90-15))+15;
+         var currentFake = Math.floor(Math.random() * count);
+
+         var blinkTheThing = function(pick){
+             posters.removeClass("selected");
+             Pick(pick).addClass("selected");
+         };
+
+         secondsOfTorture = secondsOfTorture*2;
+
+         setTimeout(function(){
+             blinkTheThing(pick);
+             Pick(pick).effect("pulsate");
+
+         }, secondsOfTorture*500);
+
+         while (secondsOfTorture > 0) {
+             setTimeout(function(){
+                 var oldFake = currentFake;
+                 while (oldFake == currentFake) {
+                     currentFake = Math.floor(Math.random() * count);
+                 }
+
+                 blinkTheThing(currentFake);
+             }, (secondsOfTorture-1)*500);
+             secondsOfTorture -= 1;
+         }
+     });
  });
+
 </script>
 {% endblock %}
-
-

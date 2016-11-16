@@ -16,3 +16,14 @@
   </div>
   {% endif %}
 {% endblock %}
+{% block script %}
+  <script>
+   $(function(){
+       $(".image").on("click", function(event){
+           var $target;
+           $target = $(event.target).closest(".poster");
+           $target.toggleClass("selected");
+       });
+   });
+  </script>
+{% endblock %}
