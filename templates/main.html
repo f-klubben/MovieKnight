@@ -1,4 +1,8 @@
-﻿<form method="POST" action="search">
+﻿{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="search">
     <input type="text" name="query" placeholder="what movie?" /><br/>
     <button type="submit">Search!</button>
 </form>
+{% endblock %}

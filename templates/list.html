@@ -1,31 +1,28 @@
 ﻿<!-- This is noncompliant html on purpose! -->
-<style>
- * { box-sizing: border-box; }
+{% extends "base.html" %}
 
- .image {
-     margin: -5px;
-     width: 15%;
-     border-color: transparent;
-     border-style: solid;
-     border-width: 10px;
- }
-
- .selected {
-     border-color: red;
- }
-</style>
-
+{% block content %}
 <div class="col-xs-12">
-    <button class="btn btn-large btn-success pick-a-movie">Pick a movie for me</button>
+    <h1>Movie picking thingy</h1>
+    <div class="row">
+        <div class="col-xs-12">
+            <button class="btn btn-large btn-success pick-a-movie">Pick a movie for me</button>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xs-12">
+            {% for image in images %}
+            <div class="poster image">
+                <img src="{{ image }}"></img>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
-<div class="col-xs-12">
-    {% for image in images %}
+{% endblock %}
 
-    <img class="image poster" src="{{ image }}"></img>
-
-    {% endfor %}
-</div>
-{% include "all_the_stuff.html" %}
+{% block script %}
 <script>
  var posters = $(".poster");
 
@@ -37,3 +34,6 @@
      $(posters.get(pick)).addClass("selected");
  });
 </script>
+{% endblock %}
+
+

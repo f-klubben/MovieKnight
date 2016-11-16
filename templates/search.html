@@ -1,14 +1,18 @@
-﻿<html>
-  <title>Results</title>
-  <body>
+﻿{% extends "base.html" %}
+<title>Results</title>
+{% block content %}
   {% if posters|length == 0 %}
-  <b>Nothing, we found nothing.</b>
+  <h1>Nothing, we found nothing.</h1>
   {% else %}
-  I found this looking for <b>{{ query }}</b><br/>
-
-  {% for poster in posters %}
-  <a href="{{ poster.url }}"><img src="{{ poster.url }}" style="width:120px" /></a>
-  {% endfor %}
+  <h1>I found this looking for <b>{{ query }}</b></h1>
+  <div class="row">
+      <div class="col-xs-12">
+          {% for poster in posters %}
+          <div class="poster image">
+              <img src="{{ poster.url }}" data-id="{{ poster.id }}"></img>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
   {% endif %}
-  </body>
-</html>
+{% endblock %}
