@@ -59,7 +59,7 @@ def pick():
 def search():
     query = request.form.get("query")
     posters = []
-
+    db_posters = []
     if query is not None:
         posters = find_movie_poster_url(query)
 
@@ -73,7 +73,7 @@ def search():
     db.session.commit()
 
     return render_template("search.html", posters=db_posters, query=query)
-    db_posters = []
+
 @app.route("/")
 def main_page():
     return render_template("main.html")
@@ -106,6 +106,6 @@ def list_posters():
     return render_template("list.html", images = images)
 
 if __name__ == "__main__":
-    main()
     if sys.argv[0] == "create_db":
         db.create_all()
+    main()

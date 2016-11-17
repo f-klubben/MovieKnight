@@ -1,28 +1,55 @@
 ﻿{% extends "base.html" %}
 <title>Results</title>
 {% block content %}
-  {% if posters|length == 0 %}
-  <h1>Nothing, we found nothing.</h1>
-  {% else %}
-  <h1>I found this looking for <b>{{ query }}</b></h1>
-  <div class="row">
-      <div class="col-xs-12">
-          {% for poster in posters %}
-          <div class="poster image">
-              <img src="{{ poster.url }}" data-id="{{ poster.id }}"></img>
-          </div>
-          {% endfor %}
-      </div>
-  </div>
-  {% endif %}
+<div class="row">
+    <div class="col-xs-12" style="padding-top:10px;">
+        {% if posters|length == 0 %}
+        <h1>Nothing, we found nothing.</h1>
+        <form method="POST" action="search">
+            <div class="form-group">
+                <input class="form-control" type="text" name="query" placeholder="Try again?" /><br/>
+                <button class="btn btn-success form-control" type="submit">Search!</button>
+            </div>
+        </form>
+        <a class="btn btn-default" href="/">Take me home</a>
+        {% else %}
+        <div class="col-xs-6">
+            <h1>I found this looking for <b>{{ query }}</b></h1>
+            <a class="btn btn-default" href="/">Take me home</a>
+        </div>
+        <div class="col-xs-6">
+            <form method="POST" action="search">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="query" placeholder="Search more?" /><br/>
+                    <button class="btn btn-success form-control" type="submit">Search!</button>
+                </div>
+            </form>
+        </div>
+        <hr />
+        <div class="col-xs-12" style="padding-top:10px;">
+            {% for poster in posters %}
+            <div class="poster image {{ 'selected' if poster.picked }}" data-id="{{ poster.id }}">
+                <img src="{{ poster.url }}" title="{{ poster.title }}"></img>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 {% block script %}
   <script>
    $(function(){
        $(".image").on("click", function(event){
            var $target;
+
            $target = $(event.target).closest(".poster");
            $target.toggleClass("selected");
+
+           $.ajax({ url: "pick",
+                    data: { poster_id: $target.data("id") },
+                    method: "POST" });
        });
    });
   </script>

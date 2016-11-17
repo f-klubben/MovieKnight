@@ -1,8 +1,12 @@
 ﻿{% extends "base.html" %}
 
 {% block content %}
-<form method="POST" action="search">
-    <input type="text" name="query" placeholder="what movie?" /><br/>
-    <button type="submit">Search!</button>
-</form>
+<div class="col-xs-6">
+    <h1>Search for movies</h1>
+    <form method="POST" action="search">
+        <input class="form-control" type="text" name="query" placeholder="what movie?" /><br/>
+        <button class="btn btn-success form-control" type="submit">Search!</button>
+    </form>
+    <a class="btn btn-default" href="list">Show me the list</a>
+</div>
 {% endblock %}
