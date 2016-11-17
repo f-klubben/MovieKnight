@@ -42,6 +42,19 @@ class PosterPage(db.Model):
 def main():
     app.run(debug=True)
 
+@app.route("/pick", methods=["POST"])
+def pick():
+    poster_id = request.form.get("poster_id")
+    poster = PosterPage.query.filter_by(id=poster_id).first()
+    result = json.dumps({ "success": False }), 400, { "ContentType": "application/json" }
+
+    if poster is not None:
+        poster.picked = not poster.picked
+        db.session.commit()
+        result = json.dumps({ "success": True }), 200, { "ContentType": "application/json" }
+
+    return result
+
 @app.route("/search", methods=["POST"])
 def search():
     query = request.form.get("query")
