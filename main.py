@@ -106,6 +106,6 @@ def list_posters():
     return render_template("list.html", images = images)
 
 if __name__ == "__main__":
-    if sys.argv[0] == "create_db":
+    if sys.argv[1] == "create_db":
         db.create_all()
     main()
