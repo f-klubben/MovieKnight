@@ -1,12 +1,9 @@
 from flask import Flask
 from flask import render_template
 from flask import request
-from flask import url_for
 from flask_sqlalchemy import SQLAlchemy
-from os import listdir
 from os import path
 import json
-import re
 import requests
 import sys
 
@@ -25,8 +22,8 @@ class PosterPage(db.Model):
     ext = db.Column(db.String)
     picked = db.Column(db.Boolean)
 
-    def full_path():
-        return title + ext
+    def full_path(self):
+        return self.title + self.ext
 
     def __init__(self, page):
         info = page.get("imageinfo")[0]
@@ -36,24 +33,34 @@ class PosterPage(db.Model):
         self.title = self.title[len("file:"):]
 
     def __repr__(self):
-        return str({ "url": self.url, "title": self.title })
+        return str({"url": self.url, "title": self.title})
 
 
 def main():
     app.run(debug=True)
 
+
 @app.route("/pick", methods=["POST"])
 def pick():
     poster_id = request.form.get("poster_id")
     poster = PosterPage.query.filter_by(id=poster_id).first()
-    result = json.dumps({ "success": False }), 400, { "ContentType": "application/json" }
+    result = (
+        json.dumps({"success": False}),
+        400,
+        {"ContentType": "application/json"}
+    )
 
-    if poster is not None:
+    if not poster:
         poster.picked = not poster.picked
         db.session.commit()
-        result = json.dumps({ "success": True }), 200, { "ContentType": "application/json" }
+        result = (
+            json.dumps({"success": True}),
+            200,
+            {"ContentType": "application/json"}
+        )
 
     return result
+
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -74,20 +81,24 @@ def search():
 
     return render_template("search.html", posters=db_posters, query=query)
 
+
 @app.route("/")
 def main_page():
     return render_template("main.html")
 
+
 def find_movie_poster_url(name):
-    data = { "action": "query",
-             "generator": "search",
-             "prop": "imageinfo",
-             "iiprop": "url|mediatype",
-             "gsrenablerewrites": False,
-             "gsearch": "nearmatch",
-             "gsrnamespace": 6,
-             "gsrsearch": str.join(" ",["file:", "poster", name]),
-             "format": "json" }
+    data = {
+        "action": "query",
+        "generator": "search",
+        "prop": "imageinfo",
+        "iiprop": "url|mediatype",
+        "gsrenablerewrites": False,
+        "gsearch": "nearmatch",
+        "gsrnamespace": 6,
+        "gsrsearch": str.join(" ", ["file:", "poster", name]),
+        "format": "json"
+    }
 
     result = requests.get(api_place, data)
     pages = json.loads(result.text)
@@ -97,10 +108,11 @@ def find_movie_poster_url(name):
 
     return list(posters)
 
+
 @app.route("/list/")
 def list_posters():
     images = PosterPage.query.filter_by(picked=True)
-    return render_template("list.html", images = images)
+    return render_template("list.html", images=images)
 
 if __name__ == "__main__":
     if sys.argv[1] == "create_db":
