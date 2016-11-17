@@ -25,8 +25,8 @@ class PosterPage(db.Model):
     ext = db.Column(db.String)
     picked = db.Column(db.Boolean)
 
-    def full_path():
-        return title + ext
+    def full_path(self):
+        return self.title + self.ext
 
     def __init__(self, page):
         info = page.get("imageinfo")[0]
