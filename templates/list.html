@@ -30,7 +30,7 @@
      $(".btn.pick-a-movie").on("click", function(event) {
          var count = posters.length;
          var pick = Math.floor(Math.random() * count);
-         var secondsOfTorture = 5; // Math.floor(Math.random() * (90-15))+15;
+         var secondsOfTorture = Math.floor(Math.random() * (90-15))+15;
          var currentFake = Math.floor(Math.random() * count);
 
          var blinkTheThing = function(pick){

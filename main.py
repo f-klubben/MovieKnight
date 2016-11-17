@@ -100,9 +100,6 @@ def find_movie_poster_url(name):
 @app.route("/list/")
 def list_posters():
     images = PosterPage.query.filter_by(picked=True)
-    # images = map(lambda img: url_for("static", filename=img),
-    #              listdir("."+static_directory))
-
     return render_template("list.html", images = images)
 
 if __name__ == "__main__":
