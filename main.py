@@ -1,19 +1,33 @@
+from flask import Flask
+from flask import render_template
+from flask import request
+from flask import url_for
+from flask_sqlalchemy import SQLAlchemy
 from os import listdir
 from os import path
-import requests
 import json
 import re
-from flask import Flask
-from flask import request
-from flask import render_template
-from flask import url_for
+import requests
+import sys
 
 api_place = "https://en.wikipedia.org/w/api.php"
 static_directory = "/static"
 app = Flask(__name__, static_url_path=static_directory)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+db = SQLAlchemy(app)
 
 
-class PosterPage :
+class PosterPage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String, unique=True)
+    file_type = db.Column(db.String)
+    title = db.Column(db.String)
+    ext = db.Column(db.String)
+    picked = db.Column(db.Boolean)
+
+    def full_path():
+        return title + ext
+
     def __init__(self, page):
         info = page.get("imageinfo")[0]
         self.url = info.get("url")
@@ -36,8 +50,17 @@ def search():
     if query is not None:
         posters = find_movie_poster_url(query)
 
-    return render_template("search.html", posters=posters, query=query)
+    for poster in posters:
+        db_poster = PosterPage.query.filter_by(url=poster.url).first()
+        if db_poster is None:
+            db.session.add(poster)
+            db_poster = poster
+        db_posters.append(db_poster)
 
+    db.session.commit()
+
+    return render_template("search.html", posters=db_posters, query=query)
+    db_posters = []
 @app.route("/")
 def main_page():
     return render_template("main.html")
@@ -63,10 +86,13 @@ def find_movie_poster_url(name):
 
 @app.route("/list/")
 def list_posters():
-    images = map(lambda img: url_for("static", filename=img),
-                 listdir("."+static_directory))
+    images = PosterPage.query.filter_by(picked=True)
+    # images = map(lambda img: url_for("static", filename=img),
+    #              listdir("."+static_directory))
 
     return render_template("list.html", images = images)
 
 if __name__ == "__main__":
     main()
+    if sys.argv[0] == "create_db":
+        db.create_all()
