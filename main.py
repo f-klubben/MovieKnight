@@ -44,22 +44,17 @@ def main():
 def pick():
     poster_id = request.form.get("poster_id")
     poster = PosterPage.query.filter_by(id=poster_id).first()
-    result = (
-        json.dumps({"success": False}),
-        400,
-        {"ContentType": "application/json"}
-    )
+    response_code = 400
+    content_type = {"ContentType": "application/json"}
+    data = json.dumps({"success": False})
 
     if not poster:
         poster.picked = not poster.picked
         db.session.commit()
-        result = (
-            json.dumps({"success": True}),
-            200,
-            {"ContentType": "application/json"}
-        )
+        data = json.dumps({"success": True})
+        response_code = 200
 
-    return result
+    return data, response_code, content_type
 
 
 @app.route("/search", methods=["POST"])
