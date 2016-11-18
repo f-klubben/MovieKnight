@@ -109,6 +109,7 @@ def list_posters():
     images = PosterPage.query.filter_by(picked=True)
     return render_template("list.html", images=images)
 
+
 if __name__ == "__main__":
     if sys.argv[1] == "create_db":
         db.create_all()
